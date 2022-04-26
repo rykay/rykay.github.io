@@ -97,22 +97,14 @@
         container_g.append("g")
             .attr("transform", "translate(0," + height + ")")
             .call(d3.axisBottom(xScale))
-            .append("text")
-            .attr("y", height-265)
-            .attr("x", width-200)
-            .attr("stroke", "black")
-            .text("Year");
+            
 
         //create y axis and apply yScale
         container_g.append("g")
             .call(d3.axisLeft(yScale).tickFormat(function(d){
                 return "$" + d;
             }).ticks(10))
-            .append("text")
-            .attr("y", 6)
-            .attr("dy", "0.71em")
-            .attr("text-anchor", "end")
-            .text("value");
+            
 
         //draw bars for each year from data
         container_g.selectAll(".bar")
@@ -124,14 +116,10 @@
             .attr("width", xScale.bandwidth())
             .attr("height", function(d) { return height - yScale(d.dollars); });
 
-
-    });
-
-
 </script>
 </body>
 									
-									<head>
+	<head>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" integrity="sha512-wNH6xsp2n8CfB91nrBtfc4sfLwYPBMjSWVUwQOp60AYYXH6i8yCwuKFZ4rgK2i6pQek/b+bSyR7b01/922IBzQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 </head>
@@ -245,7 +233,7 @@
 						<!-- Work -->
 							<article id="work" class="panel">
 								<header>
-									<h2>Tennis Majors</h2>
+									<h2>Misleading</h2>
 								</header>
 								<p>
 									How is the first graph misleading! 
