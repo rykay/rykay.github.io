@@ -79,3 +79,110 @@
 </script>
 </body>
 </html>
+
+<!doctype HTML>
+<html>
+<head>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3-legend/2.25.6/d3-legend.min.js" integrity="sha512-wNH6xsp2n8CfB91nrBtfc4sfLwYPBMjSWVUwQOp60AYYXH6i8yCwuKFZ4rgK2i6pQek/b+bSyR7b01/922IBzQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+</head>
+<body>
+<script>
+    var canvasWidth = 750;
+    var canvasHeight = 650;
+    var margin = 250;
+
+
+    var svg = d3.select("body").append("svg")
+        .attr("width",  canvasWidth)
+        .attr("height", canvasHeight);
+
+    var width = svg.attr("width") - margin;
+    var height = svg.attr("height") - margin;
+
+    var container_g = svg.append("g")
+        .attr("transform",
+            "translate(" + 100 + ", " + 100 + ")");
+    var xScale = d3.scaleBand()
+        .range([0, width]).padding(0.4);
+    var yScale = d3.scaleLinear()
+        .range([height, 0]);
+
+    var colorScale = ["#eff3ff","#bdd7e7","#6baed6", "#2171b5", "#08519c"]
+
+
+
+
+
+    d3.csv("https://raw.githubusercontent.com/rykay/cars/main/money.csv").then(data => {
+
+        xScale.domain(data.map(function(d) { return d.year; }));
+        //yScale.domain([0, d3.max(data, function(d) { return d.dollars; })]);
+        //this would always return the first value in csv...so I had to hard code the max to set domain
+
+        yScale.domain([0, 2125]); //hard coded this since it was my own file that i created to do this portion of the assignment
+
+        var sequentialScale = d3.scaleQuantize()
+            .domain([0, 2125])
+            .range(colorScale);
+
+        //create x axis and apply xScale
+        container_g.append("g")
+            .attr("transform", "translate(0," + height + ")")
+            .call(d3.axisBottom(xScale))
+            .append("text")
+            .attr("y", height - 350)
+            .attr("x", width-250)
+            .attr("stroke", "black")
+            .style("font-size", "14px")
+            .text("Year");
+
+        //create y axis and apply yScale
+        container_g.append("g")
+            .call(d3.axisLeft(yScale).tickFormat(function(d){
+                return "$" + d;
+            }).ticks(10))
+            .append("text")
+            .attr("transform", "rotate(-90)")
+            .attr("y", -5)
+            .attr("x", -170)
+            .attr("dy", "-5.1em")
+            .attr("stroke", "black")
+            .style("font-size", "14px")
+            .text("Dollars")
+
+        //draw bars for each year from data
+        container_g.selectAll(".bar")
+            .data(data)
+            .enter().append("rect")
+            .attr("class", "bar")
+            .attr("x", function(d) { return xScale(d.year); })
+            .attr("y", function(d) { return yScale(d.dollars); })
+            .attr("fill", function(d) {return sequentialScale(d.dollars);})
+            .attr("width", xScale.bandwidth())
+            .attr("height", function(d) { return height - yScale(d.dollars); });
+
+
+        //add title with x and y coordinates
+        svg.append("text")
+            .attr("transform", "translate(100, 0)")
+            .attr("x", 85)
+            .attr("y", 50)
+            .attr("font-size", "24px")
+            .text("My Spendings Over The Years");
+
+        //create legend
+        var legend = d3.legendColor()
+            .labelFormat(d3.format('.2f'))
+            .title('Dollars Spent')
+            .scale(sequentialScale)
+        svg.append("g")
+            .attr('class', 'legend')
+            .attr('transform', 'translate(' + (width + 100) + ',' + ((70)) + ')')
+            .call(legend)
+
+    });
+
+
+</script>
+</body>
